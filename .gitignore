@@ -1,0 +1,16 @@
+/elpa/
+kkcrc
+/transient/
+auto-save-list
+server
+ac-comphist.dat
+/tutorial/
+/url/
+*.elc
+/var/
+custom.el
+/el-get/
+mediawikisettings.el
+/secret/
+/recentf
+*.log
