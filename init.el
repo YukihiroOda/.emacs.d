@@ -527,7 +527,11 @@
    )
  )
 (global-set-key
- (kbd "C-x c")
+ (kbd "C-x m")
+ 'nil
+ )
+(global-set-key
+ (kbd "C-x m")
  'compile
  )
 (global-set-key
