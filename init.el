@@ -353,14 +353,20 @@
 			    )
 		      (make-local-variable 'outline-regexp)
 	      )
-	    )
+		   )
+  :config
+  (when (eq system-type 'gnu/linux)
+    (setq dvi2-command "evince")
+    )
+  (when (or (eq system-type 'windows-nt) (eq system-type 'cygwin))
+    (setq tex-pdfview-command "rundll32 shell32,ShellExec_RunDLL SumatraPDF -reuse-instance")
+    )
   )
 (leaf yahtml
   ;;; YaHTML-mode
   :commands yahtml-mode
   :mode "\\.html$"
  )
-
 
 ;;; BibTeX-mode ---------------------------------------
 (leaf BibTeX
