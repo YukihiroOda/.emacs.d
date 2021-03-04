@@ -338,10 +338,6 @@
 (leaf yatex
   :ensure t
   :commands yatex-mode
-  :setq (
-	 (tex-command . "lualatex")
-	 (YaTeX-kanji-code . 4)
-	 )
   :mode "\\.tex$" "\\.ltx$" "\\.sty$"
   :mode-hook
   ;; yatex-mode-hook
@@ -362,6 +358,15 @@
     (setq tex-pdfview-command "rundll32 shell32,ShellExec_RunDLL SumatraPDF -reuse-instance")
     )
   )
+;; Default の tex-command を latexmk に
+(setq tex-command "latexmk -c -gg -lualatex")
+;; Default を utf-8 に
+(setq YaTeX-kanji-code 4)
+;; YaTeX キーバインドを C-c ? から C-c C-? に変更
+(setq YaTeX-inhibit-prefix-letter t)
+;; \section の背景の色を変更．(YaTeX-hilit-sectioning-face . '(light 時の forecolor/backcolor dark 時の forecolor/backcolor))
+(setq YaTeX-hilit-sectioning-face '(black/cyan black/DeepSkyBlue))
+
 (leaf yahtml
   ;;; YaHTML-mode
   :commands yahtml-mode
