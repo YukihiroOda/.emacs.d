@@ -594,6 +594,8 @@
     :require mozc
     :setq (
 	   (default-input-method . "japanese-mozc")
+	   (mozc-leim-title . "あ")
+	   (mozc-candidate-style . 'echo-area)
 	   )
     :config
     (add-hook 'input-method-activate-hook
