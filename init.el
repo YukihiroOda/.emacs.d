@@ -86,6 +86,7 @@
 	   (js-indent-level . 2)
 	   (make-backup-files)
 	   (tool-bar-mode)
+	   (fill-column . 100)
 	   )
   )
 
