@@ -182,7 +182,31 @@
 					       )
 	      )
     :global-minor-mode t)
+  (leaf counsel-gtags
+    :emacs>= 24.5
+    :ensure t
+    :bind (
+	   ("M-t" . counsel-gtags-find-definition)
+	   ("M-r" . counsel-gtags-find-reference)
+	   ("M-s" . counsel-gtags-find-symbol)
+	   ("M-," . counsel-gtags-go-backword)
+	   )
+    )
   )
+
+(mapc
+
+    (lambda (hook)
+   (add-hook hook
+	     (lambda nil
+	       (counsel-gtags-mode 1)
+	       )
+	     )
+   )
+ '( ;; counsel-gtags-mode
+   c-mode-hook c++-mode-hook
+	       )
+ )
 
 (leaf prescient
   :doc "Better sorting and filtering"
