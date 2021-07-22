@@ -46,9 +46,6 @@
     )
   )
 
-
-
-
 ;; leaf-convert and leaf-tree ----------------
 (leaf leaf
   :config
@@ -421,6 +418,33 @@
 	 ;; set the command for typesetting (default: "satysfi -b")
 	 (satysfi-command . "satysfi")
 	 )
+  )
+
+
+;; Settings for rust
+(setq exec-path (cons (expand-file-name "~/bin") exec-path))
+(setq exec-path (cons (expand-file-name "~/.cargo/bin") exec-path))
+
+(leaf rust-mode
+  :ensure t
+  :commands rust-mode
+  :mode "\\.rs$"
+  )
+
+(leaf cargo
+  :ensure t
+  :hook (rust-mode . cargo-minor-mode)
+  )
+
+(leaf lsp-mode
+  :ensure t
+  :hook (rust-mode . lsp)
+  :bind ("C-c h" . lsp-describe-thing-at-point)
+  :custom (lsp-rust-server 'rust-analyzer)
+  )
+
+(leaf lsp-ui
+  :ensure t
   )
 
 ;; Settings for Coq ----------
