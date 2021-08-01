@@ -485,6 +485,10 @@
   :config
   (remove-hook 'elpy-modules 'elpy-module-highlight-indentation) ;; インデントハイライトの無効化
   (remove-hook 'elpy-modules 'elpy-module-flymake) ;; flymakeの無効化
+  :setq (
+	 (elpy-rpc-backend . "jedi")
+	 (elpy-rpc-virtualenv-path . 'current)
+	 )
   :custom
   (elpy-rpc-python-command . "python3") ;; https://mako-note.com/elpy-rpc-python-version/の問題を回避するための設定
   (flycheck-python-flake8-executable . "flake8")
@@ -496,12 +500,11 @@
 	 )
   )
 
+
 (leaf virtualenvwrapper
   :ensure t
-  :hook (
-	 (python-mode-hook . virtualenvwrapper-activate)
-	 )
   )
+
 (leaf auto-virtualenvwrapper
   :ensure t
   :hook (
