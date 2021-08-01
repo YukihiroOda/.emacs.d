@@ -247,6 +247,78 @@
   (volatile-highlights-mode t)
   )
 
+;; highlight-indent-guide ----------------
+(leaf highlight-indent-guides
+  :ensure t
+  :blackout t
+  :hook (
+	 (
+	  (prog-mode-hook yaml-mode-hook) . highlight-indent-guides-mode
+	  )
+	 )
+  :custom (
+           (highlight-indent-guides-method . 'character)
+           (highlight-indent-guides-auto-enabled . t)
+           (highlight-indent-guides-responsive . t)
+           (highlight-indent-guides-character . ?|)
+	   )
+  )
+
+;; rainbow-delimiters
+(leaf rainbow-delimiters
+  :ensure t
+  :hook
+  (
+   (prog-mode-hook       . rainbow-delimiters-mode)
+   )
+  )
+
+;; whitespace
+(leaf whitespace
+  :ensure t
+  :commands whitespace-mode
+  :bind ("C-c W" . whitespace-cleanup)
+  :custom (
+	   (whitespace-style . '(face
+                                trailing
+                                tabs
+                                spaces
+                                empty
+                                space-mark
+                                tab-mark)
+			     )
+           (whitespace-display-mappings . '(
+					    (space-mark ?　 [?□])
+                                            (tab-mark ?	 [?» ?	] [?\ ?	])
+					    )
+					)
+           (whitespace-space-regexp . "\(　+\)")
+           (whitespace-global-modes .
+	     '(emacs-lisp-mode shell-script-mode sh-mode python-mode yatex-mode cc-mode)
+				    )
+           (global-whitespace-mode . t)
+	   )
+
+  :config
+  (set-face-attribute 'whitespace-trailing nil
+                      :background "Black"
+                      :foreground "DeepPink"
+                      :underline t)
+  (set-face-attribute 'whitespace-tab nil
+                      :background "Black"
+                      :foreground "LightSkyBlue"
+                      :underline t)
+  (set-face-attribute 'whitespace-space nil
+                      :background "Black"
+                      :foreground "GreenYellow"
+                      :weight 'bold)
+    (set-face-attribute 'whitespace-empty nil
+                      :background "Black")
+  )
+
+;; py-isort
+(leaf py-isort :ensure t)
+
 ;;elscreen -----------------------
 (leaf elscreen
   :ensure t
@@ -295,7 +367,8 @@
           ("C-s" . company-filter-candidates)
           ("C-n" . company-select-next)
           ("C-p" . company-select-previous)
-          ("<tab>" . company-complete-selection))
+          ("<tab>" . company-complete-selection)
+	  )
          (company-search-map
           ("C-n" . company-select-next)
           ("C-p" . company-select-previous)
@@ -322,6 +395,56 @@
   :config
   (add-to-list 'company-backends 'company-c-headers)
   )
+
+
+(leaf yasnippet
+  :ensure t
+  :blackout yas-minor-mode
+  :custom ((yas-indent-line . 'fixed)
+	   (yas-global-mode . t)
+	   )
+  :bind (
+	 (yas-keymap
+	  ("<tab>" . nil)
+	  )            ; conflict with company
+	 (yas-minor-mode-map
+	  ("C-c y i" . yas-insert-snippet)
+	  ("C-c y n" . yas-new-snippet)
+	  ("C-c y v" . yas-visit-snippet-file)
+	  ("C-c y l" . yas-describe-tables)
+	  ("C-c y g" . yas-reload-all)))
+  :config
+  (leaf yasnippet-snippets :ensure t)
+  (leaf yatemplate
+    :ensure t
+    :config
+    (yatemplate-fill-alist)
+    )
+  (defvar company-mode/enable-yas t
+    "Enable yasnippet for all backends.")
+  (defun company-mode/backend-with-yas (backend)
+    (if (or (not company-mode/enable-yas) (and (listp backend) (member 'company-yasnippet backend)
+					       )
+	    )
+	backend
+      (append (if (consp backend) backend (list backend)
+		  )
+	      '(:with company-yasnippet)
+	      )
+      )
+    )
+  (defun set-yas-as-company-backend ()
+    (setq company-backends
+	  (mapcar #'company-mode/backend-with-yas company-backends)
+	  )
+    )
+  :hook
+  (
+   (company-mode-hook . set-yas-as-company-backend)
+   )
+  )
+
+
 
 ;; git-complete -------------------
 (leaf git-complete
@@ -355,7 +478,36 @@
 	)
  )
 
+;; elpy
+(leaf elpy
+  :ensure t
+  :init (elpy-enable)
+  :config
+  (remove-hook 'elpy-modules 'elpy-module-highlight-indentation) ;; インデントハイライトの無効化
+  (remove-hook 'elpy-modules 'elpy-module-flymake) ;; flymakeの無効化
+  :custom
+  (elpy-rpc-python-command . "python3") ;; https://mako-note.com/elpy-rpc-python-version/の問題を回避するための設定
+  (flycheck-python-flake8-executable . "flake8")
+  :bind (elpy-mode-map
+         ("C-c C-r f" . elpy-format-code)
+	 )
+  :hook (
+	 (elpy-mode-hook . flycheck-mode)
+	 )
+  )
 
+(leaf virtualenvwrapper
+  :ensure t
+  :hook (
+	 (python-mode-hook . virtualenvwrapper-activate)
+	 )
+  )
+(leaf auto-virtualenvwrapper
+  :ensure t
+  :hook (
+	 (python-mode-hook . auto-virtualenvwrapper-activate)
+	 )
+  )
 ;; YaTeX-mode ---------------------
 (leaf yatex
   :ensure t
@@ -478,8 +630,8 @@
      )
    '( ;; flyspell-mode  
      yatex-mode-hook bibtex-mode-hook git-commit-setup-hook git-commit-turn-on-flyspell
-		     org-mode-hook satysfi-mode-hook
-		   )
+     org-mode-hook satysfi-mode-hook
+     )
    )
   )
 (leaf flyspell-correct-ivy
