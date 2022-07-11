@@ -765,16 +765,58 @@
   (setq coq-prog-name "C:/Program Files (x86)/Coq/bin/coqtop.exe")
   ;; To use utf-8 in Windows
   (unless (cl-member 'cp65001 coding-system-list)
-    (define-coding-system-alias 'cp65001 'utf-8))
+    (define-coding-system-alias 'cp65001 'utf-8-unix)
+    )
   ;; To use wsl
-  (setq shell-file-name (executable-find "bash"))
+  (setq shell-file-name (executable-find "bash")
+	)
   (setq grep-use-null-device nil)
   ;; To use aspell
   (setq-default ispell-program-name "~/.emacs.d/aspell.cmd")
   (with-eval-after-load "ispell"
-  (add-to-list 'ispell-skip-region-alist '("[^\000-\377]+")))
+    (add-to-list 'ispell-skip-region-alist '("[^\000-\377]+")
+		 )
+    )
   ;; フォント
   (set-face-attribute 'default nil :family "Yu Gothic" :height 125)
+  ;; tr-ime
+  (leaf tr-ime
+    :ensure t
+    :setq (
+	   (default-input-method . "W32-IME")
+	   (w32-ime-mode-line-state-indicator-list  . '("[--]" "[あ]" "[--]")
+						    )
+	   )
+    :setq-default (
+		   (w32-ime-mode-line-state-indicator . "[--]")
+		   )
+    :config
+    (tr-ime-advanced-install)
+    (w32-ime-initialize)
+    (wrap-function-to-control-ime 'universal-argument t nil)
+    (wrap-function-to-control-ime 'read-string nil nil)
+    (wrap-function-to-control-ime 'read-char nil nil)
+    (wrap-function-to-control-ime 'read-from-minibuffer nil nil)
+    (wrap-function-to-control-ime 'y-or-n-p nil nil)
+    (wrap-function-to-control-ime 'yes-or-no-p nil nil)
+    (wrap-function-to-control-ime 'map-y-or-n-p nil nil)
+    (wrap-function-to-control-ime 'register-read-with-preview nil nil)
+    (defun w32-isearch-update ()
+      (interactive)
+      (isearch-update))
+    (define-key isearch-mode-map [compend] 'w32-isearch-update)
+    (define-key isearch-mode-map [kanji] 'isearch-toggle-input-method)
+
+    (add-hook 'isearch-mode-hook
+          (lambda () (setq w32-ime-composition-window (minibuffer-window)
+			   )
+	    )
+	  )
+    (add-hook 'isearch-mode-end-hook
+              (lambda () (setq w32-ime-composition-window nil)
+		)
+	      )
+    )
   )
 
 (leaf settings-for-linux)
