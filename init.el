@@ -784,11 +784,11 @@
     :ensure t
     :setq (
 	   (default-input-method . "W32-IME")
-	   (w32-ime-mode-line-state-indicator-list  . '("[--]" "[あ]" "[--]")
+	   (w32-ime-mode-line-state-indicator-list  . '("--A--" "--あ--" "--A--")
 						    )
 	   )
     :setq-default (
-		   (w32-ime-mode-line-state-indicator . "[--]")
+		   (w32-ime-mode-line-state-indicator . "--A--")
 		   )
     :config
     (tr-ime-advanced-install)
