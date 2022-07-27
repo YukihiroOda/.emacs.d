@@ -602,6 +602,22 @@
   :ensure t
   )
 
+
+;; Settings for Gauche
+(setq scheme-program-name "gosh -i")
+(autoload 'scheme-mode "cmuscheme" "Major mode for scheme." t)
+(autoload 'run-scheme "cmuscheme" "Run a n inferior Scheme process." t)
+
+(defun scheme-other-window ()
+  "Run scheme on other window"
+  (interactive)
+  (switch-to-buffer-other-window
+    (get-buffer-create "*scheme*"))
+  (run-scheme scheme-program-name))
+
+(define-key global-map
+  "\C-cs" 'scheme-other-window)
+
 ;; Settings for Coq ----------
 (leaf proof-general
   :ensure t
