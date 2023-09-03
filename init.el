@@ -694,6 +694,12 @@
     )
   )
 
+;; lean4 --------------------------
+(leaf lean4
+  ;; :preface (el-get-bundle ganmacs/emacs-surround)
+  :el-get leanprover/lean4-mode
+  )
+
 ;; surround --------------------------
 (leaf surround
   ;; :preface (el-get-bundle ganmacs/emacs-surround)
